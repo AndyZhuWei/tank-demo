@@ -5,6 +5,8 @@ import java.util.Properties;
 
 public class PropertyMgr {
 	static Properties props = new Properties();
+
+	private PropertyMgr(){}
 	
 	static {
 		try {
