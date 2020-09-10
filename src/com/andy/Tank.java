@@ -29,6 +29,8 @@ public class Tank {
 
     private boolean moving = true;
 
+    private FireStrategy fireStrategy;
+
     public Tank(int x, int y, Dir dir,Group group,TankFrame tf) {
         this.x = x;
         this.y = y;
@@ -40,6 +42,22 @@ public class Tank {
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
+
+        if(this.group == Group.GOOD) {
+            String goodFS = (String)PropertyMgr.get("goodFS");
+            try {
+                fireStrategy = (FireStrategy) Class.forName(goodFS).getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } else {
+            String badFS = (String)PropertyMgr.get("badFS");
+            try {
+                fireStrategy = (FireStrategy) Class.forName(badFS).getDeclaredConstructor().newInstance();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
     }
 
 
@@ -131,12 +149,13 @@ public class Tank {
     }
 
     public void fire() {
-        int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
-        int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-        Bullet bullet = new Bullet(bX,bY,this.dir,this.group,tf);
-        tf.bullets.add(bullet);
+        fireStrategy.fire(this);
 
     }
+
+   /* public void fire(FireStrategy fireStrategy) {
+        fireStrategy.fire(this);
+    }*/
 
     public void die() {
         this.living = false;
@@ -164,5 +183,13 @@ public class Tank {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+    public TankFrame getTf() {
+        return tf;
+    }
+
+    public void setTf(TankFrame tf) {
+        this.tf = tf;
     }
 }
