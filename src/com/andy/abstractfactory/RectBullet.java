@@ -1,7 +1,6 @@
-package com.andy;
+package com.andy.abstractfactory;
 
-import com.andy.abstractfactory.BaseBullet;
-import com.andy.abstractfactory.BaseTank;
+import com.andy.*;
 
 import java.awt.*;
 
@@ -10,11 +9,11 @@ import java.awt.*;
  * @Description TODO
  * @date 2020/9/6-20:52
  */
-public class Bullet extends BaseBullet {
+public class RectBullet extends BaseBullet {
 
     int x ,y;
     Dir dir;
-    private static final int SPEED = Integer.parseInt((String)PropertyMgr.get("bulletSpeed"));;
+    private static final int SPEED = Integer.parseInt((String) PropertyMgr.get("bulletSpeed"));;
 
     public static int WIDTH = ResourceMgr.bulletD.getWidth();
 
@@ -27,7 +26,7 @@ public class Bullet extends BaseBullet {
 
     TankFrame tf = null;
 
-    public Bullet(int x, int y, Dir dir,Group group,TankFrame tf) {
+    public RectBullet(int x, int y, Dir dir, Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -47,7 +46,7 @@ public class Bullet extends BaseBullet {
             tf.bullets.remove(this);
         }
 
-        switch(dir) {
+        /*switch(dir) {
             case LEFT:
                 g.drawImage(ResourceMgr.bulletL, x, y, null);
                 break;
@@ -60,7 +59,13 @@ public class Bullet extends BaseBullet {
             case DOWN:
                 g.drawImage(ResourceMgr.bulletD, x, y, null);
                 break;
-        }
+        }*/
+        Color c = g.getColor();
+        g.setColor(Color.yellow);
+        g.fillRect(x,y,10,10);
+        g.setColor(c);
+
+
 
         move();
     }

@@ -1,12 +1,13 @@
 package com.andy;
 
+import com.andy.abstractfactory.*;
+
 import java.awt.*;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -15,21 +16,24 @@ import java.util.List;
  * @date 2020/9/6-15:43
  */
 public class TankFrame extends Frame {
+    //在这里替换GameFactory的实现就可以替换游戏中的子弹、爆炸和坦克的样式
+    public GameFactory gf = new DefaultFactory();
 
-    Tank myTank = new Tank(200,400,Dir.DOWN,Group.GOOD,this);
-    List<Tank> tanks = new ArrayList<>();
-    List<Bullet> bullets = new ArrayList();
-    List<Explode> explodes = new ArrayList();
+    BaseTank myTank = gf.createTank(200, 400, Dir.DOWN, Group.GOOD, this);
+    public List<BaseTank> tanks = new ArrayList<>();
+    public List<BaseBullet> bullets = new ArrayList();
+    public List<BaseExplode> explodes = new ArrayList();
 
-    static final int GAME_WIDTH = Integer.parseInt((String)PropertyMgr.get("gameWidth")),
-            GAME_HEIGHT=Integer.parseInt((String)PropertyMgr.get("gameHeight"));
+    public static final int GAME_WIDTH = Integer.parseInt((String) PropertyMgr.get("gameWidth")),
+            GAME_HEIGHT = Integer.parseInt((String) PropertyMgr.get("gameHeight"));
+
+
 
     public TankFrame() {
-        setSize(GAME_WIDTH,GAME_HEIGHT);
+        setSize(GAME_WIDTH, GAME_HEIGHT);
         setResizable(false);
         setTitle("tank war");
         setVisible(true);
-
 
 
         addKeyListener(new MyKeyListener());
@@ -62,7 +66,7 @@ public class TankFrame extends Frame {
     //会自动调用，需要显示的时候会自动调用重新绘制
     @Override
     public void paint(Graphics g) {
-       // System.out.println("paint");
+        // System.out.println("paint");
         Color c = g.getColor();
         g.setColor(Color.WHITE);
         g.drawString("子弹的数量:" + bullets.size(), 10, 60);
@@ -72,24 +76,24 @@ public class TankFrame extends Frame {
 
 
         myTank.paint(g);
-        for(int i=0;i<bullets.size();i++) {
+        for (int i = 0; i < bullets.size(); i++) {
             bullets.get(i).paint(g);
         }
 
-        for(int i=0;i<tanks.size();i++) {
-            Tank tank = tanks.get(i);
+        for (int i = 0; i < tanks.size(); i++) {
+            BaseTank tank = tanks.get(i);
             tank.paint(g);
         }
 
-        for(int i=0;i<explodes.size();i++) {
-            Explode explode = explodes.get(i);
+        for (int i = 0; i < explodes.size(); i++) {
+            BaseExplode explode = explodes.get(i);
             explode.paint(g);
         }
 
 
         //collision detect
-        for(int i=0; i<bullets.size(); i++) {
-            for(Tank t : tanks )
+        for (int i = 0; i < bullets.size(); i++) {
+            for (BaseTank t : tanks)
                 bullets.get(i).collideWith(t);
         }
 
@@ -100,10 +104,11 @@ public class TankFrame extends Frame {
         boolean bU = false;
         boolean bR = false;
         boolean bD = false;
+
         @Override
         public void keyPressed(KeyEvent e) {
             int keyCode = e.getKeyCode();
-            switch(keyCode) {
+            switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                     bL = true;
                     break;
@@ -131,7 +136,7 @@ public class TankFrame extends Frame {
         @Override
         public void keyReleased(KeyEvent e) {
             int keyCode = e.getKeyCode();
-            switch(keyCode) {
+            switch (keyCode) {
                 case KeyEvent.VK_LEFT:
                     bL = false;
                     break;
@@ -153,14 +158,14 @@ public class TankFrame extends Frame {
         }
 
         private void setMainTankDir() {
-            if(!bL && !bU && !bR && !bD) {
+            if (!bL && !bU && !bR && !bD) {
                 myTank.setMoving(false);
             } else {
                 myTank.setMoving(true);
-                if(bL) myTank.setDir(Dir.LEFT);
-                if(bU) myTank.setDir(Dir.UP);
-                if(bR) myTank.setDir(Dir.RIGHT);
-                if(bD) myTank.setDir(Dir.DOWN);
+                if (bL) myTank.setDir(Dir.LEFT);
+                if (bU) myTank.setDir(Dir.UP);
+                if (bR) myTank.setDir(Dir.RIGHT);
+                if (bD) myTank.setDir(Dir.DOWN);
             }
 
         }

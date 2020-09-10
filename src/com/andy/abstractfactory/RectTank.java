@@ -1,24 +1,24 @@
-package com.andy;
+package com.andy.abstractfactory;
 
-import com.andy.abstractfactory.BaseTank;
+import com.andy.*;
 
 import java.awt.*;
 import java.util.Random;
 
 /**
  * @author HP
- * @Description TODO
+ * @Description 方形坦克
  * @date 2020/9/6-20:29
  */
-public class Tank extends BaseTank {
+public class RectTank extends BaseTank {
+
 
 
     private Random random = new Random();
 
 
 
-
-    public Tank(int x, int y, Dir dir,Group group,TankFrame tf) {
+    public RectTank(int x, int y, Dir dir, Group group, TankFrame tf) {
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -53,7 +53,7 @@ public class Tank extends BaseTank {
             tf.tanks.remove(this);
         }
 
-        switch(dir) {
+        /*switch(dir) {
             case LEFT:
                 g.drawImage(this.group == Group.GOOD? ResourceMgr.goodTankL : ResourceMgr.badTankL, x, y, null);
                 break;
@@ -66,7 +66,11 @@ public class Tank extends BaseTank {
             case DOWN:
                 g.drawImage(this.group == Group.GOOD? ResourceMgr.goodTankD : ResourceMgr.badTankD, x, y, null);
                 break;
-        }
+        }*/
+        Color c = g.getColor();
+        g.setColor(this.group == Group.GOOD? Color.blue : Color.yellow);
+        g.fillRect(x,y,20,20);
+        g.setColor(c);
 
         move();
     }
@@ -111,14 +115,33 @@ public class Tank extends BaseTank {
     private void boundsCheck() {
         if (this.x < 2) x = 2;
         if (this.y < 28) y = 28;
-        if (this.x > TankFrame.GAME_WIDTH- Tank.WIDTH -2) x = TankFrame.GAME_WIDTH - Tank.WIDTH -2;
-        if (this.y > TankFrame.GAME_HEIGHT - Tank.HEIGHT -2 ) y = TankFrame.GAME_HEIGHT -Tank.HEIGHT -2;
+        if (this.x > TankFrame.GAME_WIDTH- RectTank.WIDTH -2) x = TankFrame.GAME_WIDTH - RectTank.WIDTH -2;
+        if (this.y > TankFrame.GAME_HEIGHT - RectTank.HEIGHT -2 ) y = TankFrame.GAME_HEIGHT - RectTank.HEIGHT -2;
     }
 
     private void randomDir() {
         this.dir = Dir.values()[random.nextInt(4)];
     }
 
+    public Dir getDir() {
+        return dir;
+    }
 
+    public void setDir(Dir dir) {
+        this.dir = dir;
+    }
+
+    public boolean isMoving() {
+        return moving;
+    }
+
+    public void setMoving(boolean moving) {
+        this.moving = moving;
+    }
+
+    public void fire() {
+        fireStrategy.fire(this);
+
+    }
 
 }

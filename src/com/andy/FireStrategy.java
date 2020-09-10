@@ -1,5 +1,7 @@
 package com.andy;
 
+import com.andy.abstractfactory.BaseTank;
+
 /**
  * @author HP
  * @Description 坦克的开火策略
@@ -7,5 +9,5 @@ package com.andy;
  */
 public interface FireStrategy {
 
-    void fire(Tank tank);
+    void fire(BaseTank tank);
 }
