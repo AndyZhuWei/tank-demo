@@ -1,7 +1,5 @@
 package com.andy;
 
-import jdk.nashorn.internal.runtime.regexp.joni.ast.StateNode;
-
 import java.awt.*;
 
 /**
@@ -11,9 +9,10 @@ import java.awt.*;
  */
 public class Bullet {
 
-    int x ,y;
+    int x, y;
     Dir dir;
-    private static final int SPEED = Integer.parseInt((String)PropertyMgr.get("bulletSpeed"));;
+    private static final int SPEED = Integer.parseInt((String) PropertyMgr.get("bulletSpeed"));
+    ;
 
     public static int WIDTH = ResourceMgr.bulletD.getWidth();
 
@@ -24,28 +23,28 @@ public class Bullet {
 
     Rectangle rect = new Rectangle();
 
-    TankFrame tf = null;
+    GameModel gm = null;
 
-    public Bullet(int x, int y, Dir dir,Group group,TankFrame tf) {
+    public Bullet(int x, int y, Dir dir, Group group, GameModel gm) {
         this.x = x;
         this.y = y;
         this.dir = dir;
-        this.group=group;
+        this.group = group;
 
         rect.x = this.x;
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
 
-        this.tf = tf;
+        this.gm = gm;
     }
 
     public void paint(Graphics g) {
-        if(!living) {
-            tf.bullets.remove(this);
+        if (!living) {
+            gm.bullets.remove(this);
         }
 
-        switch(dir) {
+        switch (dir) {
             case LEFT:
                 g.drawImage(ResourceMgr.bulletL, x, y, null);
                 break;
@@ -85,19 +84,19 @@ public class Bullet {
         rect.x = this.x;
         rect.y = this.y;
 
-        if(x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) living = false;
+        if (x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) living = false;
     }
 
     public void collideWith(Tank t) {
-        if(this.group == t.getGroup()) {
+        if (this.group == t.getGroup()) {
             return;
         }
-        if(this.rect.intersects(t.rect)) {
+        if (this.rect.intersects(t.rect)) {
             this.die();
             t.die();
-            int eX = t.getX() + Tank.WIDTH/2 - Explode.WIDTH/2;
-            int eY = t.getY() + Tank.HEIGHT/2 - Explode.HEIGHT/2;
-            tf.explodes.add(new Explode(eX,eY,tf));
+            int eX = t.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
+            int eY = t.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
+            gm.explodes.add(new Explode(eX, eY, gm));
         }
     }
 
