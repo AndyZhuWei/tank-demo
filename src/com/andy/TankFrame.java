@@ -5,9 +5,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 /**
  * @author HP
@@ -18,8 +15,6 @@ public class TankFrame extends Frame {
 
     GameModel gm = GameModel.getInstance();
 
-
-
     static final int GAME_WIDTH = Integer.parseInt((String)PropertyMgr.get("gameWidth")),
             GAME_HEIGHT=Integer.parseInt((String)PropertyMgr.get("gameHeight"));
 
@@ -28,7 +23,6 @@ public class TankFrame extends Frame {
         setResizable(false);
         setTitle("tank war");
         setVisible(true);
-
 
 
         addKeyListener(new MyKeyListener());
@@ -86,7 +80,8 @@ public class TankFrame extends Frame {
                     bD = true;
                     break;
                 case KeyEvent.VK_CONTROL:
-                    gm.getMainTank().fire();
+                    gm.myTank.handlerFire();
+                    //gm.getMainTank().fire();
                     //myTank.fire(new DefaultFireStrategy());
                     //myTank.fire(new FourDirFireStrategy());
                     break;

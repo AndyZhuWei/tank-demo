@@ -1,6 +1,12 @@
 package com.andy;
 
+
+import com.andy.observer.TankFireEvent;
+import com.andy.observer.TankFireHandler;
+import com.andy.observer.TankFireObserver;
+
 import java.awt.*;
+import java.util.Arrays;
 import java.util.Random;
 
 /**
@@ -14,6 +20,16 @@ public class Tank extends GameObject {
     public static int WIDTH = ResourceMgr.goodTankU.getWidth();
 
     public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
+
+
+    private java.util.List<TankFireObserver> tankFireObserverList = Arrays.asList(new TankFireHandler());
+
+    public void handlerFire() {
+        TankFireEvent tankFireEvent = new TankFireEvent(this);
+        for (TankFireObserver tankFireObserver : tankFireObserverList) {
+            tankFireObserver.actionOnFire(tankFireEvent);
+        }
+    }
 
     Dir dir;
     GameModel gm;
@@ -161,8 +177,11 @@ public class Tank extends GameObject {
 
     public void fire() {
         fireStrategy.fire(this);
-
     }
+
+
+
+
 
    /* public void fire(FireStrategy fireStrategy) {
         fireStrategy.fire(this);
