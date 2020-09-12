@@ -21,9 +21,7 @@ public class Bullet extends GameObject {
 
     Rectangle rect = new Rectangle();
 
-    public GameModel gm = null;
-
-    public Bullet(int x, int y, Dir dir, Group group, GameModel gm) {
+    public Bullet(int x, int y, Dir dir, Group group) {
         this.x = x;
         this.y = y;
         this.dir = dir;
@@ -34,13 +32,12 @@ public class Bullet extends GameObject {
         rect.width = WIDTH;
         rect.height = HEIGHT;
 
-        this.gm = gm;
     }
 
     @Override
     public void paint(Graphics g) {
         if (!living) {
-            gm.gameObjectList.remove(this);
+            GameModel.getInstance().remove(this);
         }
 
         switch (dir) {
@@ -84,19 +81,6 @@ public class Bullet extends GameObject {
         rect.y = this.y;
 
         if (x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) living = false;
-    }
-
-    public void collideWith(Tank t) {
-        if (this.group == t.getGroup()) {
-            return;
-        }
-        if (this.rect.intersects(t.rect)) {
-            this.die();
-            t.die();
-            int eX = t.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
-            int eY = t.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
-            gm.gameObjectList.add(new Explode(eX, eY, gm));
-        }
     }
 
     public void die() {

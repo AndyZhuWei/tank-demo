@@ -11,24 +11,38 @@ import java.util.List;
  */
 public class GameModel {
 
-    Tank myTank = new Tank(200, 400, Dir.DOWN, Group.GOOD, this);
+    private static final GameModel gameModel = new GameModel();
 
-    List<GameObject> gameObjectList = new ArrayList<>();
+    Tank myTank = new Tank(200, 400, Dir.DOWN, Group.GOOD);
+
+    private List<GameObject> gameObjectList = new ArrayList<>();
 
     ColliderChain colliderChain = new ColliderChain();
 
+    public static GameModel getInstance() {
+        return gameModel;
+    }
 
-    public GameModel() {
+    public void add(GameObject gameObject) {
+        this.gameObjectList.add(gameObject);
+    }
+
+    public void remove(GameObject gameObject) {
+        this.gameObjectList.remove(gameObject);
+    }
+
+
+    private GameModel() {
         int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
 
         for (int i = 0; i < initTankCount; i++) {
-            gameObjectList.add(new Tank(50 + 80 * i, 200, Dir.DOWN, Group.BAD, this));
+            add(new Tank(50 + 80 * i, 200, Dir.DOWN, Group.BAD));
         }
 
-        gameObjectList.add(new Wall(150,150,200,50));
-        gameObjectList.add(new Wall(550,150,200,50));
-        gameObjectList.add(new Wall(300,300,50,200));
-        gameObjectList.add(new Wall(550,300,50,200));
+        add(new Wall(150, 150, 200, 50));
+        add(new Wall(550, 150, 200, 50));
+        add(new Wall(300, 300, 50, 200));
+        add(new Wall(550, 300, 50, 200));
 
         colliderChain.add(new BulletTankCollider()).add(new TankTankCollider()).
                 add(new WallTankCollider()).add(new BulletWallCollider());
@@ -58,7 +72,7 @@ public class GameModel {
             for (int j = i + 1; j < gameObjectList.size(); j++) {
                 GameObject go1 = gameObjectList.get(i);
                 GameObject go2 = gameObjectList.get(j);
-                colliderChain.collide(go1,go2);
+                colliderChain.collide(go1, go2);
             }
         }
 
