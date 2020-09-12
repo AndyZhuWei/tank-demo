@@ -7,23 +7,21 @@ import java.awt.*;
  * @Description TODO
  * @date 2020/9/6-20:52
  */
-public class Bullet {
+public class Bullet extends GameObject {
 
-    int x, y;
     Dir dir;
     private static final int SPEED = Integer.parseInt((String) PropertyMgr.get("bulletSpeed"));
-    ;
 
     public static int WIDTH = ResourceMgr.bulletD.getWidth();
 
     public static int HEIGHT = ResourceMgr.bulletD.getHeight();
     private boolean living = true;
 
-    private Group group = Group.BAD;
+    public Group group = Group.BAD;
 
     Rectangle rect = new Rectangle();
 
-    GameModel gm = null;
+    public GameModel gm = null;
 
     public Bullet(int x, int y, Dir dir, Group group, GameModel gm) {
         this.x = x;
@@ -39,9 +37,10 @@ public class Bullet {
         this.gm = gm;
     }
 
+    @Override
     public void paint(Graphics g) {
         if (!living) {
-            gm.bullets.remove(this);
+            gm.gameObjectList.remove(this);
         }
 
         switch (dir) {
@@ -96,7 +95,7 @@ public class Bullet {
             t.die();
             int eX = t.getX() + Tank.WIDTH / 2 - Explode.WIDTH / 2;
             int eY = t.getY() + Tank.HEIGHT / 2 - Explode.HEIGHT / 2;
-            gm.explodes.add(new Explode(eX, eY, gm));
+            gm.gameObjectList.add(new Explode(eX, eY, gm));
         }
     }
 

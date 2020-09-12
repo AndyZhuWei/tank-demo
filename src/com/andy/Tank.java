@@ -8,15 +8,13 @@ import java.util.Random;
  * @Description TODO
  * @date 2020/9/6-20:29
  */
-public class Tank {
+public class Tank extends GameObject {
 
     private static final int SPEED = Integer.parseInt((String)PropertyMgr.get("tankSpeed"));
     public static int WIDTH = ResourceMgr.goodTankU.getWidth();
 
     public static int HEIGHT = ResourceMgr.goodTankU.getHeight();
 
-    private int x;
-    private int y;
     Dir dir;
     GameModel gm;
     private Group group;
@@ -30,6 +28,10 @@ public class Tank {
     private boolean moving = true;
 
     private FireStrategy fireStrategy;
+
+    public int prevX;
+
+    public int prevY;
 
     public Tank(int x, int y, Dir dir,Group group,GameModel gm) {
         this.x = x;
@@ -61,9 +63,10 @@ public class Tank {
     }
 
 
+    @Override
     public void paint(Graphics g) {
         if(!living) {
-            gm.tanks.remove(this);
+            gm.gameObjectList.remove(this);
         }
 
         switch(dir) {
@@ -88,6 +91,9 @@ public class Tank {
         if(!living) return;
 
         if(!moving) return;
+
+        prevX = x;
+        prevY = y;
 
         switch (dir) {
             case LEFT:
@@ -184,5 +190,7 @@ public class Tank {
     public void setGroup(Group group) {
         this.group = group;
     }
+
+
 
 }

@@ -12,51 +12,56 @@ import java.util.List;
 public class GameModel {
 
     Tank myTank = new Tank(200, 400, Dir.DOWN, Group.GOOD, this);
-    List<Tank> tanks = new ArrayList<>();
-    List<Bullet> bullets = new ArrayList();
-    List<Explode> explodes = new ArrayList();
+
+    List<GameObject> gameObjectList = new ArrayList<>();
+
+    ColliderChain colliderChain = new ColliderChain();
 
 
     public GameModel() {
         int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
 
         for (int i = 0; i < initTankCount; i++) {
-            tanks.add(new Tank(50 + 80 * i, 200, Dir.DOWN, Group.BAD, this));
+            gameObjectList.add(new Tank(50 + 80 * i, 200, Dir.DOWN, Group.BAD, this));
         }
+
+        colliderChain.add(new BulletTankCollider()).add(new TankTankCollider());
     }
 
 
     public void paint(Graphics g) {
         // System.out.println("paint");
-        Color c = g.getColor();
+       /* Color c = g.getColor();
         g.setColor(Color.WHITE);
         g.drawString("子弹的数量:" + bullets.size(), 10, 60);
         g.drawString("敌人的数量:" + tanks.size(), 10, 80);
         g.drawString("爆炸的数量:" + explodes.size(), 10, 100);
-        g.setColor(c);
+        g.setColor(c);*/
 
 
         myTank.paint(g);
-        for (int i = 0; i < bullets.size(); i++) {
-            bullets.get(i).paint(g);
+
+
+        for (int i = 0; i < gameObjectList.size(); i++) {
+            GameObject go = gameObjectList.get(i);
+            go.paint(g);
         }
 
-        for (int i = 0; i < tanks.size(); i++) {
-            Tank tank = tanks.get(i);
-            tank.paint(g);
-        }
-
-        for (int i = 0; i < explodes.size(); i++) {
-            Explode explode = explodes.get(i);
-            explode.paint(g);
+        //碰撞检测
+        for (int i = 0; i < gameObjectList.size(); i++) {
+            for (int j = i + 1; j < gameObjectList.size(); j++) {
+                GameObject go1 = gameObjectList.get(i);
+                GameObject go2 = gameObjectList.get(j);
+                colliderChain.collide(go1,go2);
+            }
         }
 
 
         //collision detect
-        for (int i = 0; i < bullets.size(); i++) {
+        /*for (int i = 0; i < bullets.size(); i++) {
             for (Tank t : tanks)
                 bullets.get(i).collideWith(t);
-        }
+        }*/
     }
 
     public Tank getMainTank() {
