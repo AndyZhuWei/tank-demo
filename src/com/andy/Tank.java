@@ -63,6 +63,12 @@ public class Tank extends GameObject {
     }
 
 
+    public void back() {
+        x = prevX;
+        y = prevY;
+    }
+
+
     @Override
     public void paint(Graphics g) {
         if(!living) {

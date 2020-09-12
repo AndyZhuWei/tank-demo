@@ -25,7 +25,13 @@ public class GameModel {
             gameObjectList.add(new Tank(50 + 80 * i, 200, Dir.DOWN, Group.BAD, this));
         }
 
-        colliderChain.add(new BulletTankCollider()).add(new TankTankCollider());
+        gameObjectList.add(new Wall(150,150,200,50));
+        gameObjectList.add(new Wall(550,150,200,50));
+        gameObjectList.add(new Wall(300,300,50,200));
+        gameObjectList.add(new Wall(550,300,50,200));
+
+        colliderChain.add(new BulletTankCollider()).add(new TankTankCollider()).
+                add(new WallTankCollider()).add(new BulletWallCollider());
     }
 
 
