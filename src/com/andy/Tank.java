@@ -196,5 +196,13 @@ public class Tank extends GameObject {
         this.group = group;
     }
 
+    @Override
+    public int getWidth() {
+        return WIDTH;
+    }
 
+    @Override
+    public int getHeight() {
+        return HEIGHT;
+    }
 }

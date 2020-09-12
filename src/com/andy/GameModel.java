@@ -13,6 +13,8 @@ public class GameModel {
 
     private static final GameModel gameModel = new GameModel();
 
+    int initTankCount;
+
     Tank myTank = new Tank(200, 400, Dir.DOWN, Group.GOOD);
 
     private List<GameObject> gameObjectList = new ArrayList<>();
@@ -33,7 +35,7 @@ public class GameModel {
 
 
     private GameModel() {
-        int initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
+        initTankCount = Integer.parseInt((String) PropertyMgr.get("initTankCount"));
 
         for (int i = 0; i < initTankCount; i++) {
             add(new Tank(50 + 80 * i, 200, Dir.DOWN, Group.BAD));
@@ -43,6 +45,10 @@ public class GameModel {
         add(new Wall(550, 150, 200, 50));
         add(new Wall(300, 300, 50, 200));
         add(new Wall(550, 300, 50, 200));
+        add(new Wall(750, 300, 50, 200));
+        add(new Wall(450, 450, 50, 200));
+        add(new Wall(150, 500, 50, 200));
+        add(new Wall(750, 500, 200, 50));
 
         colliderChain.add(new BulletTankCollider()).add(new TankTankCollider()).
                 add(new WallTankCollider()).add(new BulletWallCollider());
@@ -75,6 +81,20 @@ public class GameModel {
                 colliderChain.collide(go1, go2);
             }
         }
+
+      /*  boolean hasBadTank = false;
+        for (int i = 0; i < gameObjectList.size(); i++) {
+            GameObject gameObject = gameObjectList.get(i);
+            if(gameObject instanceof Tank) {
+                hasBadTank = true;
+            }
+        }*/
+        /*if(!hasBadTank) {
+            ++initTankCount;
+            for (int i = 0; i < initTankCount; i++) {
+                add(new Tank(50 + 80 * i, 200, Dir.DOWN, Group.BAD));
+            }
+        }*/
 
 
         //collision detect
