@@ -1,7 +1,12 @@
 package com.andy;
 
+import com.andy.net.BulletNewMsg;
+import com.andy.net.Client;
+import com.andy.net.TankJoinMsg;
+
 import java.awt.*;
 import java.util.Random;
+import java.util.UUID;
 
 /**
  * @author HP
@@ -21,11 +26,17 @@ public class Tank {
     TankFrame tf;
     private Group group;
 
+    private UUID id = UUID.randomUUID();
+
     Rectangle rect = new Rectangle();
 
     private Random random = new Random();
 
     private boolean living = true;
+
+    public boolean isLiving() {
+        return living;
+    }
 
     private boolean moving = true;
 
@@ -42,11 +53,38 @@ public class Tank {
         rect.height = HEIGHT;
     }
 
+    public Tank(TankJoinMsg msg) {
+        this.x = msg.x;
+        this.y = msg.y;
+        this.dir = msg.dir;
+        this.moving = msg.moving;
+        this.group = msg.group;
+        this.id = msg.id;
+
+        rect.x = this.x;
+        rect.y = this.y;
+        rect.width = WIDTH;
+        rect.height = HEIGHT;
+    }
 
     public void paint(Graphics g) {
+        //uuid on head
+        Color c = g.getColor();
+        g.setColor(Color.YELLOW);
+        g.drawString(id.toString(), this.x, this.y - 20);
+        g.drawString("live=" + living, x, y-10);
+        g.setColor(c);
+
+        //draw a rect if dead!
         if(!living) {
-            tf.tanks.remove(this);
+            moving = false;
+            Color cc = g.getColor();
+            g.setColor(Color.WHITE);
+            g.drawRect(x, y, WIDTH, HEIGHT);
+            g.setColor(cc);
+            return;
         }
+
 
         switch(dir) {
             case LEFT:
@@ -133,8 +171,14 @@ public class Tank {
     public void fire() {
         int bX = this.x + Tank.WIDTH/2 - Bullet.WIDTH/2;
         int bY = this.y + Tank.HEIGHT/2 - Bullet.HEIGHT/2;
-        Bullet bullet = new Bullet(bX,bY,this.dir,this.group,tf);
-        tf.bullets.add(bullet);
+
+        Bullet b = new Bullet(this.id, bX, bY, this.dir, this.group, this.tf);
+
+        tf.bullets.add(b);
+
+        Client.INSTANCE.send(new BulletNewMsg(b));
+
+        if(this.group == Group.GOOD) new Thread(()->new Audio("audio/tank_fire.wav").play()).start();
 
     }
 
@@ -164,5 +208,14 @@ public class Tank {
 
     public void setGroup(Group group) {
         this.group = group;
+    }
+
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
     }
 }

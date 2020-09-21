@@ -1,8 +1,11 @@
 package com.andy;
 
+import com.andy.net.Client;
+import com.andy.net.TankDieMsg;
 import jdk.nashorn.internal.runtime.regexp.joni.ast.StateNode;
 
 import java.awt.*;
+import java.util.UUID;
 
 /**
  * @author HP
@@ -22,22 +25,38 @@ public class Bullet {
 
     private Group group = Group.BAD;
 
+    private UUID id = UUID.randomUUID();
+    private UUID playerId;
+
     Rectangle rect = new Rectangle();
 
     TankFrame tf = null;
 
-    public Bullet(int x, int y, Dir dir,Group group,TankFrame tf) {
+    public Bullet(UUID playerId, int x, int y, Dir dir, Group group, TankFrame tf) {
+        this.playerId = playerId;
         this.x = x;
         this.y = y;
         this.dir = dir;
-        this.group=group;
+        this.group = group;
+        this.tf = tf;
 
         rect.x = this.x;
         rect.y = this.y;
         rect.width = WIDTH;
         rect.height = HEIGHT;
 
-        this.tf = tf;
+    }
+
+    public void collideWith(Tank tank) {
+        if(this.playerId.equals(tank.getId())) return;
+        //System.out.println("bullet rect:" + this.rect);
+        //System.out.println("tank rect:" + tank.rect);
+        if(this.living && tank.isLiving() && this.rect.intersects(tank.rect)) {
+            tank.die();
+            this.die();
+            Client.INSTANCE.send(new TankDieMsg(this.id, tank.getId()));
+        }
+
     }
 
     public void paint(Graphics g) {
@@ -88,20 +107,57 @@ public class Bullet {
         if(x < 0 || y < 0 || x > TankFrame.GAME_WIDTH || y > TankFrame.GAME_HEIGHT) living = false;
     }
 
-    public void collideWith(Tank t) {
-        if(this.group == t.getGroup()) {
-            return;
-        }
-        if(this.rect.intersects(t.rect)) {
-            this.die();
-            t.die();
-            int eX = t.getX() + Tank.WIDTH/2 - Explode.WIDTH/2;
-            int eY = t.getY() + Tank.HEIGHT/2 - Explode.HEIGHT/2;
-            tf.explodes.add(new Explode(eX,eY,tf));
-        }
-    }
+
 
     public void die() {
         this.living = false;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public UUID getPlayerId() {
+        return playerId;
+    }
+
+    public void setPlayerId(UUID playerId) {
+        this.playerId = playerId;
+    }
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Dir getDir() {
+        return dir;
+    }
+
+    public void setDir(Dir dir) {
+        this.dir = dir;
+    }
+
+    public Group getGroup() {
+        return group;
+    }
+
+    public void setGroup(Group group) {
+        this.group = group;
     }
 }
